@@ -16,10 +16,10 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
   int i = py * cols + px;
   if (px < cols && py < rows) {
     float val = 0.0f;
-    for (int fy = 0; fx < filterWidth; fy++) {
-        for (int fx = 0; fy < filterWidth; fx++) {
-            blurx = px - roundf(filterWidth / 2) + fx;
-            blury = py - roundf(filterWidth / 2) + fy;
+    for (int fy = 0; fy < filterWidth; fy++) {
+        for (int fx = 0; fx < filterWidth; fx++) {
+            int blurx = px - roundf(filterWidth / 2) + fx;
+            int blury = py - roundf(filterWidth / 2) + fy;
             if (blurx < cols && blury < rows && blurx > -1 && blury > -1){
                 val += d_filter[fy * filterWidth + fx] * d_in[blury * cols + blurx];
             }
@@ -67,7 +67,7 @@ void recombineChannels(unsigned char *d_r, unsigned char *d_g, unsigned char *d_
   int py = blockIdx.y * blockDim.y + threadIdx.y;
   if (px < cols && py < rows) {
     int i = py * cols + px;
-    d_orgba = make_uchar4(d_r[i], d_g[i], d_b[i], 255);s
+    d_orgba[i] = make_uchar4(d_r[i], d_g[i], d_b[i], 255);
   }
 }
 
@@ -79,7 +79,7 @@ void your_gauss_blur(uchar4* d_imrgba, uchar4 *d_oimrgba, size_t rows, size_t co
 
 
         dim3 blockSize(BLOCK, BLOCK, 1);
-        dim3 gridSize((numCols-1)/BLOCK + 1, (numRows-1)/BLOCK + 1, 1);
+        dim3 gridSize((cols-1)/BLOCK + 1, (rows-1)/BLOCK + 1, 1);
 
         separateChannels<<<gridSize, blockSize>>>(d_imrgba, d_red, d_green, d_blue, rows, cols);
         cudaDeviceSynchronize();
