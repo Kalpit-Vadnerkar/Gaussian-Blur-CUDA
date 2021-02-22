@@ -55,7 +55,7 @@ void gaussian_blur_filter(float *arr, const int f_sz, const float f_sigma=0.2){
     float norm_const = 0.0; // normalization const for the kernel 
 
     for(int r = -f_sz/2; r <= f_sz/2; r++){
-        for(int c = -f_sz/2; c <= c_sz/2; c++){
+        for(int c = -f_sz/2; c <= f_sz/2; c++){
             float fSum = expf(-(float)(r*r + c*c)/(2*f_sigma*f_sigma)); 
             arr[(r+f_sz/2)*f_sz + (c + f_sz/2)] = fSum; 
             filterSum  += fSum;
@@ -91,7 +91,7 @@ void serialRecombineChannels(unsigned char *r, unsigned char *g, unsigned char *
 
 int main(int argc, char const *argv[]) {
    
-    uchar4 *h_in_img, *h_o_img; // pointers to the actual image input and output pointers  
+    uchar4 *h_in_img, *h_o_img, *r_o_img; // pointers to the actual image input and output pointers  
     uchar4 *d_in_img, *d_o_img;
 
     unsigned char *h_red, *h_blue, *h_green; 
@@ -136,7 +136,7 @@ int main(int argc, char const *argv[]) {
         std::cerr << "Image file couldn't be read, exiting\n"; 
         exit(1);
     }
-
+    cv::Mat imrgba, oimg;
     cv::cvtColor(img, imrgba, cv::COLOR_BGR2RGBA);
 
     oimg.create(img.rows, img.cols, CV_8UC4); 
@@ -150,14 +150,14 @@ int main(int argc, char const *argv[]) {
 
     // allocate the memories for the device pointers  
     
-    checkCudaErrors(cudaMalloc((void**)&d_imrgba, sizeof(uchar4) * numPixels));
+    checkCudaErrors(cudaMalloc((void**)&d_in_img, sizeof(uchar4) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_red, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_green, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_blue, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_red_blurred, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_green_blurred, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_blue_blurred, sizeof(unsigned char) * numPixels));
-    checkCudaErrors(cudaMalloc((void**)&d_orgba, sizeof(uchar4) * numPixels));
+    checkCudaErrors(cudaMalloc((void**)&d_o_img, sizeof(uchar4) * numPixels));
     checkCudaErrors(cudaMalloc(&d_filter, sizeof(float) * fWidth * fWidth));
 
     // filter allocation 
@@ -167,7 +167,7 @@ int main(int argc, char const *argv[]) {
     printArray<float>(h_filter, 81); // printUtility.
 
     // copy the image and filter over to GPU here 
-    checkCudaErrors(cudaMemcpy(d_imrgba, h_in_img, sizeof(uchar4) * numPixels, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_in_img, h_in_img, sizeof(uchar4) * numPixels, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(d_filter, h_in_img, sizeof(float) * fWidth * fWidth, cudaMemcpyHostToDevice));
 
     // kernel launch code 
@@ -203,8 +203,14 @@ int main(int argc, char const *argv[]) {
     checkResult(reference, outfile, 1e-5);
 
     // free any necessary memory.
-    cudaFree(d_imrgba);
-    cudaFree(d_grey);
+    cudaFree(d_in_img);
+    cudaFree(d_o_img);
+    cudaFree(d_red);
+    cudaFree(d_green);
+    cudaFree(d_blue);
+    cudaFree(d_red_blurred);
+    cudaFree(d_green_blurred);
+    cudaFree(d_blue_blurred);
     delete [] h_filter;
     return 0;
 }
