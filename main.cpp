@@ -84,7 +84,7 @@ void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, c
                     int curRow = y + blurRow;
                     int curCol = x + blurCol;
                     if (curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
-                        pixval = pixval + ((float) in[curRow * cols + curCol] * d_filter[filter]);
+                        pixval = pixval + ((float) in[curRow * cols + curCol] * filter[filter]);
                     }
                     filter++;
                 }
@@ -110,7 +110,7 @@ void serialRecombineChannels(unsigned char *r, unsigned char *g, unsigned char *
     const int rows, const int cols){
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
-            imrgba[y * cols + x] = make_uchar4(r[y * cols + x], g[y * cols + x], b[y * cols + x], 255);
+            orgba[y * cols + x] = make_uchar4(r[y * cols + x], g[y * cols + x], b[y * cols + x], 255);
         }
     }
 } 
@@ -208,9 +208,9 @@ int main(int argc, char const *argv[]) {
 
     // perform serial memory allocation and function calls, final output should be stored in *r_o_img
     //  ** there are many ways to perform timing in c++ such as std::chrono **
-    h_red = (unsigned char)malloc(numPixels);
-    h_green = (unsigned char)malloc(numPixels);
-    h_blue = (unsigned char)malloc(numPixels);
+    h_red = (unsigned char*)malloc(numPixels);
+    h_green = (unsigned char*)malloc(numPixels);
+    h_blue = (unsigned char*)malloc(numPixels);
     
     unsigned char* h_red_blurred = new unsigned char[numPixels];
     unsigned char* h_green_blurred = new unsigned char[numPixels];
