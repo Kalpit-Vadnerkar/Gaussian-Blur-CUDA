@@ -23,7 +23,7 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
             int curRow = py + blurRow;
             int curCol = px + blurCol;
             if(curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
-            pixval += (d_in[curRow * cols + curCol] * d_filter[fx * filterWidth + fy]);
+            pixval += ((float) d_in[curRow * cols + curCol] * d_filter[fx * filterWidth + fy]);
             fy++;
             }
         fx++;
@@ -71,7 +71,7 @@ void recombineChannels(unsigned char *d_r, unsigned char *d_g, unsigned char *d_
   int py = blockIdx.y * blockDim.y + threadIdx.y;
   if (px < cols && py < rows) {
     int i = py * cols + px;
-    d_orgba[i] = make_uchar4(d_b[i], d_g[i], d_r[i], 0);
+    d_orgba[i] = (uchar4) make_uchar4(d_b[i], d_g[i], d_r[i], 255);
   }
 }
 
