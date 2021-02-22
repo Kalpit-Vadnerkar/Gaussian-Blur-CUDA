@@ -136,10 +136,9 @@ int main(int argc, char const *argv[]) {
         std::cerr << "Image file couldn't be read, exiting\n"; 
         exit(1);
     }
-    cv::Mat imrgba, oimg;
     cv::cvtColor(img, imrgba, cv::COLOR_BGR2RGBA);
 
-    oimg.create(img.rows, img.cols, CV_8UC4); 
+    o_img.create(img.rows, img.cols, CV_8UC4); 
 
     const size_t  numPixels = img.rows*img.cols;  
 
