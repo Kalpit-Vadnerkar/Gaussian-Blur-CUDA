@@ -69,7 +69,7 @@ void recombineChannels(unsigned char *d_r, unsigned char *d_g, unsigned char *d_
   int py = blockIdx.y * blockDim.y + threadIdx.y;
   if (px < cols && py < rows) {
     int i = py * cols + px;
-    //d_orgba[i] = make_uchar4(d_b[i], d_g[i], d_r[i], 255);
+    d_orgba[i] = make_uchar4(d_b[i], d_g[i], d_r[i], 255);
     //d_orgba[i].x = d_r[i];
     //d_orgba[i].y = d_g[i];
     //d_orgba[i].z = d_b[i];
