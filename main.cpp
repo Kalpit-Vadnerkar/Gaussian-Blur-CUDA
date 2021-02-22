@@ -223,8 +223,9 @@ int main(int argc, char const *argv[]) {
     serialGaussianBlur(h_blue, h_blue_blurred, img.rows, img.cols, h_filter, fWidth);
     serialRecombineChannels(h_red_blurred, h_green_blurred, h_blue_blurred, r_o_img, img.rows, img.cols);
     auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-    printf("%f\t", duration.count());
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    std::cout << duration;
+
 
     // create the image with the output data 
     cv::Mat output(img.rows, img.cols, CV_8UC4, (void*)h_o_img); // generate GPU output image.
