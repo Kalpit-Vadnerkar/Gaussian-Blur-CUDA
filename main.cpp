@@ -223,7 +223,7 @@ int main(int argc, char const *argv[]) {
     serialGaussianBlur(h_blue, h_blue_blurred, img.rows, img.cols, h_filter, fWidth);
     serialRecombineChannels(h_red_blurred, h_green_blurred, h_blue_blurred, r_o_img, img.rows, img.cols);
     auto stop = high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
     std::cout << duration;
 
 
