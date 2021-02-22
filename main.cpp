@@ -167,6 +167,7 @@ int main(int argc, char const *argv[]) {
 
     // copy the image and filter over to GPU here 
     checkCudaErrors(cudaMemcpy(d_in_img, h_in_img, sizeof(uchar4) * numPixels, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_o_img, h_in_img, sizeof(uchar4) * numPixels, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(d_filter, h_in_img, sizeof(float) * fWidth * fWidth, cudaMemcpyHostToDevice));
 
     // kernel launch code 
