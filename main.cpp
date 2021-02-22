@@ -226,6 +226,7 @@ int main(int argc, char const *argv[]) {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
     printf("The execution time in microseconds for serial implementation: ");
     std::cout << duration;
+    printf("\t");
 
 
 
