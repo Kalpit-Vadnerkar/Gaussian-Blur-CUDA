@@ -1,7 +1,7 @@
 #include "./gaussian_kernel.h" 
 
 
-#define BLOCK 4
+#define BLOCK 32
 
 /*
 The actual gaussian blur kernel to be implemented by 
@@ -21,7 +21,7 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
             int blurx = px - roundf(filterWidth / 2) + fx;
             int blury = py - roundf(filterWidth / 2) + fy;
             if (blurx < cols && blury < rows && blurx > -1 && blury > -1){
-                val += d_filter[fy * filterWidth + fx] * d_in[blury * cols + blurx];
+                val += (d_filter[fy * filterWidth + fx] * d_in[blury * cols + blurx]);
             }
         }
     }
@@ -57,7 +57,7 @@ void separateChannels(uchar4 *d_imrgba, unsigned char *d_r, unsigned char *d_g, 
   You can use some handy constructors provided by the 
   cuda library i.e. 
   make_int2(x, y) -> creates a vector of type int2 having x,y components 
-  make_uchar4(x,y,z,255) -> creates a vector of uchar4 type x,y,z components 
+  make_uchar4(x,y,z,150) -> creates a vector of uchar4 type x,y,z components 
   the last argument being the transperency value. 
  */
 __global__ 
