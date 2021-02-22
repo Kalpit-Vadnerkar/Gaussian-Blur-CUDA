@@ -157,7 +157,7 @@ int main(int argc, char const *argv[]) {
     checkCudaErrors(cudaMalloc((void**)&d_green_blurred, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_blue_blurred, sizeof(unsigned char) * numPixels));
     checkCudaErrors(cudaMalloc((void**)&d_o_img, sizeof(uchar4) * numPixels));
-    checkCudaErrors(cudaMalloc(&d_filter, sizeof(float) * fWidth * fWidth));
+    checkCudaErrors(cudaMalloc((void**)&d_filter, sizeof(float) * fWidth * fWidth));
 
     // filter allocation 
     h_filter = new float[fWidth*fWidth];
