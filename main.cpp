@@ -201,8 +201,8 @@ int main(int argc, char const *argv[]) {
     checkCudaErrors(cudaMemcpy(d_filter, h_in_img, sizeof(float) * fWidth * fWidth, cudaMemcpyHostToDevice));
 
     // kernel launch code 
-    your_gauss_blur(d_in_img, d_o_img, img.rows, img.cols, d_red, d_green, d_blue, 
-            d_red_blurred, d_green_blurred, d_blue_blurred, d_filter, fWidth);
+    //your_gauss_blur(d_in_img, d_o_img, img.rows, img.cols, d_red, d_green, d_blue, 
+      //      d_red_blurred, d_green_blurred, d_blue_blurred, d_filter, fWidth);
 
 
     // memcpy the output image to the host side.
