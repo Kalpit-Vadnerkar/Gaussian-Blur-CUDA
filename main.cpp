@@ -77,7 +77,7 @@ void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, c
     float *filter, const int filterWidth){
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
-            float pixval = 0.00000f;
+            float pixval = 0.0;
             int fx = 0;
             int fy = 0;
             for (int blurRow = -(filterWidth / 2); blurRow < (filterWidth / 2) + 1; ++blurRow) {
@@ -91,8 +91,8 @@ void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, c
                 }
                 fy++;
             }
-            //out[y * cols + x] = (unsigned char) pixval;
-            out[y * cols + x] = 255;
+            out[y * cols + x] = (unsigned char) pixval;
+            //out[y * cols + x] = 255;
         }
     }
 
@@ -129,7 +129,7 @@ int main(int argc, char const *argv[]) {
     unsigned char *d_red_blurred, *d_green_blurred, *d_blue_blurred;   
 
     float *h_filter, *d_filter;  
-    cv::Mat imrgba, o_img; 
+    cv::Mat imrgba, o_img, r_img; 
 
     const int fWidth = 9; 
     const float fDev = 2;
@@ -168,14 +168,14 @@ int main(int argc, char const *argv[]) {
     }
     cv::cvtColor(img, imrgba, cv::COLOR_BGR2RGBA);
 
-    o_img.create(img.rows, img.cols, CV_8UC4); 
+    o_img.create(img.rows, img.cols, CV_8UC4);
 
     const size_t  numPixels = img.rows*img.cols;  
 
 
-    h_in_img = (uchar4 *)imrgba.ptr<uchar4>(0); // pointer to input image 
-    h_o_img = (uchar4 *)imrgba.ptr<uchar4>(0); // pointer to output image 
-    r_o_img = (uchar4 *)imrgba.ptr<uchar4>(0); // pointer to reference output image 
+    h_in_img = imrgba.ptr<uchar4>(0); // pointer to input image 
+    h_o_img = imrgba.ptr<uchar4>(0); // pointer to output image 
+    r_o_img = imrgba.ptr<uchar4>(0); // pointer to reference output image 
 
     // allocate the memories for the device pointers  
     
