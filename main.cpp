@@ -224,8 +224,7 @@ int main(int argc, char const *argv[]) {
     serialRecombineChannels(h_red_blurred, h_green_blurred, h_blue_blurred, r_o_img, img.rows, img.cols);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << duration.count() << endl;
-
+    printf("%f\t", duration.count());
 
     // create the image with the output data 
     cv::Mat output(img.rows, img.cols, CV_8UC4, (void*)h_o_img); // generate GPU output image.
