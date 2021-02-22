@@ -14,12 +14,13 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
   int px = blockIdx.x * blockDim.x + threadIdx.x;
   int py = blockIdx.y * blockDim.y + threadIdx.y;
   int i = py * cols + px;
+  int blurx,blury;
   if (px < cols && py < rows) {
     float val = 0.0f;
     for (int fy = 0; fy < filterWidth; fy++) {
         for (int fx = 0; fx < filterWidth; fx++) {
-            int blurx = px - roundf(filterWidth / 2) + fx;
-            int blury = py - roundf(filterWidth / 2) + fy;
+            blurx = px - (filterWidth / 2) + fx;
+            blury = py - (filterWidth / 2) + fy;
             if (blurx < cols && blury < rows && blurx > -1 && blury > -1){
                 val += (d_filter[fy * filterWidth + fx] * d_in[blury * cols + blurx]);
             }
