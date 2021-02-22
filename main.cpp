@@ -101,9 +101,9 @@ void serialSeparateChannels(uchar4 *imrgba, unsigned char *r, unsigned char *g, 
     const int rows, const int cols){
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
-            imrgba[y * cols + x].x = r[y * cols + x];
-            imrgba[y * cols + x].x = g[y * cols + x];
-            imrgba[y * cols + x].x = b[y * cols + x];
+            r[y * cols + x] = imrgba[y * cols + x].x;
+            g[y * cols + x] = imrgba[y * cols + x].y;
+            b[y * cols + x] = imrgba[y * cols + x].z;
         }
     }
 } 
