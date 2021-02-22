@@ -91,6 +91,9 @@ void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, c
                 }
                 fy++;
             }
+            if (y == 0) {
+                printf("%f\t", pixval);
+            }
             out[y * cols + x] = (unsigned char) pixval;
             //out[y * cols + x] = 255;
         }
