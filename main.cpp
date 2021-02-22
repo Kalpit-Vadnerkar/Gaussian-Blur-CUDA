@@ -78,15 +78,15 @@ void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, c
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             float pixval = 0.00000f;
-            int filter = 0;
+            int findex = 0;
             for (int blurRow = -(filterWidth / 2); blurRow < (filterWidth / 2) + 1; ++blurRow) {
                 for (int blurCol = -(filterWidth / 2); blurCol < (filterWidth / 2) + 1; ++blurCol) {
                     int curRow = y + blurRow;
                     int curCol = x + blurCol;
                     if (curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
-                        pixval = pixval + ((float) in[curRow * cols + curCol] * filter[filter]);
+                        pixval = pixval + ((float) in[curRow * cols + curCol] * filter[findex]);
                     }
-                    filter++;
+                    findex++;
                 }
             }
             out[y * cols + x] = (unsigned char) pixval;
