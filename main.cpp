@@ -75,17 +75,44 @@ void gaussian_blur_filter(float *arr, const int f_sz, const float f_sigma=0.2){
 // Serial implementations of kernel functions
 void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, const int cols, 
     float *filter, const int filterWidth){
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            float pixval = 0.00000f;
+            int filter = 0;
+            for (int blurRow = -(filterWidth / 2); blurRow < (filterWidth / 2) + 1; ++blurRow) {
+                for (int blurCol = -(filterWidth / 2); blurCol < (filterWidth / 2) + 1; ++blurCol) {
+                    int curRow = y + blurRow;
+                    int curCol = x + blurCol;
+                    if (curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
+                        pixval = pixval + ((float) in[curRow * cols + curCol] * d_filter[filter]);
+                    }
+                    filter++;
+                }
+            }
+            out[y * cols + x] = (unsigned char) pixval;
+        }
+    }
 
 } 
 
 void serialSeparateChannels(uchar4 *imrgba, unsigned char *r, unsigned char *g, unsigned char *b,
     const int rows, const int cols){
-
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            imrgba[y * cols + x].x = r[y * cols + x];
+            imrgba[y * cols + x].x = g[y * cols + x];
+            imrgba[y * cols + x].x = b[y * cols + x];
+        }
+    }
 } 
 
 void serialRecombineChannels(unsigned char *r, unsigned char *g, unsigned char *b, uchar4 *orgba,
     const int rows, const int cols){
-
+    for (int y = 0; y < rows; y++) {
+        for (int x = 0; x < cols; x++) {
+            imrgba[y * cols + x] = make_uchar4(r[y * cols + x], g[y * cols + x], b[y * cols + x], 255);
+        }
+    }
 } 
 
 
@@ -181,6 +208,18 @@ int main(int argc, char const *argv[]) {
 
     // perform serial memory allocation and function calls, final output should be stored in *r_o_img
     //  ** there are many ways to perform timing in c++ such as std::chrono **
+    h_red = (unsigned char)malloc(numPixels);
+    h_green = (unsigned char)malloc(numPixels);
+    h_blue = (unsigned char)malloc(numPixels);
+    
+    unsigned char* h_red_blurred = new unsigned char[numPixels];
+    unsigned char* h_green_blurred = new unsigned char[numPixels];
+    unsigned char* h_blue_blurred = new unsigned char[numPixels];
+    serialSeparateChannels(h_in_img, h_red, h_green, h_blue, img.rows, img.cols);
+    serialGaussianBlur(h_red, h_red_blurred, img.rows, img.cols, h_filter, fWidth);
+    serialGaussianBlur(h_green, h_green_blurred, img.rows, img.cols, h_filter, fWidth);
+    serialGaussianBlur(h_blue, h_blue_blurred, img.rows, img.cols, h_filter, fWidth);
+    serialRecombineChannels(h_red_blurred, h_green_blurred, h_blue_blurred, r_o_img, img.rows, img.cols);
 
 
     // create the image with the output data 
