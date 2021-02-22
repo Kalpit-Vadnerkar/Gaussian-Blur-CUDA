@@ -22,7 +22,7 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
         for(int blurCol = -(filterWidth / 2); blurCol < (filterWidth / 2) + 1; ++blurCol) {        
             int curRow = py + blurRow;
             int curCol = px + blurCol;
-            if(curRow> -1 && curRow < rows && curCol > -1 && curCol < cols) {
+            if(curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
             pixval += (d_in[curRow * cols + curCol] * d_filter[fx * filterWidth + fy]);
             fy++;
             }

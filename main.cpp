@@ -143,9 +143,9 @@ int main(int argc, char const *argv[]) {
     const size_t  numPixels = img.rows*img.cols;  
 
 
-    h_in_img = (uchar4 *)imrgba.ptr<unsigned char>(0); // pointer to input image 
-    h_o_img = (uchar4 *)imrgba.ptr<unsigned char>(0); // pointer to output image 
-    r_o_img = (uchar4 *)imrgba.ptr<unsigned char>(0); // pointer to reference output image 
+    h_in_img = (uchar4 *)imrgba.ptr<uchar4>(0); // pointer to input image 
+    h_o_img = (uchar4 *)imrgba.ptr<uchar4>(0); // pointer to output image 
+    r_o_img = (uchar4 *)imrgba.ptr<uchar4>(0); // pointer to reference output image 
 
     // allocate the memories for the device pointers  
     
