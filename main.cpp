@@ -176,7 +176,7 @@ int main(int argc, char const *argv[]) {
 
 
     // memcpy the output image to the host side.
-    heckCudaErrors(cudaMemcpy(h_o_img, d_o_img, numPixels * sizeof(uchar4), cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(h_o_img, d_o_img, numPixels * sizeof(uchar4), cudaMemcpyDeviceToHost));
 
 
     // perform serial memory allocation and function calls, final output should be stored in *r_o_img
