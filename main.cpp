@@ -78,24 +78,16 @@ void serialGaussianBlur(unsigned char *in, unsigned char *out, const int rows, c
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             float pixval = 0.0;
-            int fx = 0;
-            int fy = 0;
             for (int blurRow = -(filterWidth / 2); blurRow < (filterWidth / 2) + 1; ++blurRow) {
                 for (int blurCol = -(filterWidth / 2); blurCol < (filterWidth / 2) + 1; ++blurCol) {
                     int curRow = y + blurRow;
                     int curCol = x + blurCol;
                     if (curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
-                        pixval = pixval + ((float) in[curRow * cols + curCol] * filter[fy * filterWidth + fx]);
+                        pixval += (float) in[curRow * cols + curCol] * filter[(blurRow + (filterWidth/2))*filterWidth + (blurCol + filterWidth/2)];
                     }
-                    fx++;
                 }
-                fy++;
-            }
-            if (y == 0) {
-                printf("%f\t", pixval);
             }
             out[y * cols + x] = (unsigned char) pixval;
-            //out[y * cols + x] = 255;
         }
     }
 
@@ -116,7 +108,7 @@ void serialRecombineChannels(unsigned char *r, unsigned char *g, unsigned char *
     const int rows, const int cols){
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
-            orgba[y * cols + x] = make_uchar4(r[y * cols + x], g[y * cols + x], b[y * cols + x], 255);
+            orgba[y * cols + x] = make_uchar4(b[y * cols + x], g[y * cols + x], r[y * cols + x], 255);
         }
     }
 } 
@@ -169,16 +161,18 @@ int main(int argc, char const *argv[]) {
         std::cerr << "Image file couldn't be read, exiting\n"; 
         exit(1);
     }
+    imrgba.create(img.rows, img.cols, CV_8UC4);
     cv::cvtColor(img, imrgba, cv::COLOR_BGR2RGBA);
 
     o_img.create(img.rows, img.cols, CV_8UC4);
-
+    r_img.create(img.rows, img.cols, CV_8UC4);
+    
     const size_t  numPixels = img.rows*img.cols;  
 
 
     h_in_img = imrgba.ptr<uchar4>(0); // pointer to input image 
-    h_o_img = imrgba.ptr<uchar4>(0); // pointer to output image 
-    r_o_img = imrgba.ptr<uchar4>(0); // pointer to reference output image 
+    h_o_img = o_img.ptr<uchar4>(0); // pointer to output image 
+    r_o_img = r_img.ptr<uchar4>(0); // pointer to reference output image 
 
     // allocate the memories for the device pointers  
     
@@ -200,12 +194,11 @@ int main(int argc, char const *argv[]) {
 
     // copy the image and filter over to GPU here 
     checkCudaErrors(cudaMemcpy(d_in_img, h_in_img, sizeof(uchar4) * numPixels, cudaMemcpyHostToDevice));
-    //checkCudaErrors(cudaMemcpy(d_o_img, h_in_img, sizeof(uchar4) * numPixels, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemcpy(d_filter, h_in_img, sizeof(float) * fWidth * fWidth, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_filter, h_filter, sizeof(float) * fWidth * fWidth, cudaMemcpyHostToDevice));
 
     // kernel launch code 
-    //your_gauss_blur(d_in_img, d_o_img, img.rows, img.cols, d_red, d_green, d_blue, 
-      //      d_red_blurred, d_green_blurred, d_blue_blurred, d_filter, fWidth);
+    your_gauss_blur(d_in_img, d_o_img, img.rows, img.cols, d_red, d_green, d_blue, 
+            d_red_blurred, d_green_blurred, d_blue_blurred, d_filter, fWidth);
 
 
     // memcpy the output image to the host side.

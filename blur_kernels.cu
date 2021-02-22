@@ -15,16 +15,14 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
   int py = blockIdx.y * blockDim.y + threadIdx.y;
   int i = py * cols + px;
   if (px < cols && py < rows) {
-    float pixval = 0.000000000f;
-    int filter = 0;
+    float pixval = 0.0;
     for(int blurRow = -(filterWidth / 2); blurRow < (filterWidth / 2) + 1; ++blurRow) {
         for(int blurCol = -(filterWidth / 2); blurCol < (filterWidth / 2) + 1; ++blurCol) {        
             int curRow = py + blurRow;
             int curCol = px + blurCol;
             if(curRow > -1 && curRow < rows && curCol > -1 && curCol < cols) {
-                pixval = pixval + ((float) (d_in[curRow * cols + curCol]) * d_filter[filter]);
+                pixval += ((float) d_in[curRow * cols + curCol] * d_filter[(blurRow + (filterWidth/2))*filterWidth + (blurCol + filterWidth/2)]);
             }
-            filter++;
         }
     }
     d_out[i] = (unsigned char) pixval;
