@@ -224,7 +224,9 @@ int main(int argc, char const *argv[]) {
     serialRecombineChannels(h_red_blurred, h_green_blurred, h_blue_blurred, r_o_img, img.rows, img.cols);
     auto stop = high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+    printf("The execution time in microseconds for serial implementation: ");
     std::cout << duration;
+
 
 
     // create the image with the output data 
