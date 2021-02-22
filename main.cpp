@@ -10,7 +10,8 @@
 
 #include "utils.h"
 #include "gaussian_kernel.h"
-
+#include <chrono> 
+using namespace std::chrono;
 
 /* 
  * Compute if the two images are correctly 
@@ -214,11 +215,16 @@ int main(int argc, char const *argv[]) {
     unsigned char* h_red_blurred = new unsigned char[numPixels];
     unsigned char* h_green_blurred = new unsigned char[numPixels];
     unsigned char* h_blue_blurred = new unsigned char[numPixels];
+
+    auto start = high_resolution_clock::now();
     serialSeparateChannels(h_in_img, h_red, h_green, h_blue, img.rows, img.cols);
     serialGaussianBlur(h_red, h_red_blurred, img.rows, img.cols, h_filter, fWidth);
     serialGaussianBlur(h_green, h_green_blurred, img.rows, img.cols, h_filter, fWidth);
     serialGaussianBlur(h_blue, h_blue_blurred, img.rows, img.cols, h_filter, fWidth);
     serialRecombineChannels(h_red_blurred, h_green_blurred, h_blue_blurred, r_o_img, img.rows, img.cols);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << duration.count() << endl;
 
 
     // create the image with the output data 
