@@ -15,11 +15,11 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
   int py = blockIdx.y * blockDim.y + threadIdx.y;
   int i = py * cols + px;
   if (px < cols && py < rows) {
-    float pixval = 0.0f;
+    int pixval = 0;
     int fx = 0;
     int fy = 0;
-    for(int blurRow = -filterWidth / 2; blurRow < filterWidth / 2 + 1; ++blurRow) {
-        for(int blurCol = -filterWidth / 2; blurCol < filterWidth / 2 + 1; ++blurCol) {        
+    for(int blurRow = -(filterWidth / 2); blurRow < (filterWidth / 2) + 1; ++blurRow) {
+        for(int blurCol = -(filterWidth / 2); blurCol < (filterWidth / 2) + 1; ++blurCol) {        
             int curRow = py + blurRow;
             int curCol = px + blurCol;
             if(curRow> -1 && curRow < rows && curCol > -1 && curCol < cols) {
@@ -29,7 +29,7 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
         fx++;
         }
     }
-    d_out[i] = (unsigned char)pixval;
+    d_out[i] = (unsigned char) pixval;
   }
 } 
 
@@ -61,7 +61,7 @@ void separateChannels(uchar4 *d_imrgba, unsigned char *d_r, unsigned char *d_g, 
   You can use some handy constructors provided by the 
   cuda library i.e. 
   make_int2(x, y) -> creates a vector of type int2 having x,y components 
-  make_uchar4(x,y,z,150) -> creates a vector of uchar4 type x,y,z components 
+  make_uchar4(x,y,z,255) -> creates a vector of uchar4 type x,y,z components 
   the last argument being the transperency value. 
  */
 __global__ 
