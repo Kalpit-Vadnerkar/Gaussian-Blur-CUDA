@@ -29,7 +29,7 @@ void gaussianBlur(unsigned char *d_in, unsigned char *d_out,
         fx++;
         }
     }
-    d_out[i] = (unsigned char)val;
+    d_out[i] = (unsigned char)pixval;
   }
 } 
 
